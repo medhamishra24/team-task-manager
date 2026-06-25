@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Task Manager</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI';
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .box {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 15px;
+            width: 350px;
+            text-align: center;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            border: none;
+            border-radius: 8px;
+            background: #3b82f6;
+            color: white;
+            cursor: pointer;
+        }
+
+        li {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .overdue {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="box" id="auth">
+        <h2>🚀 Task Manager</h2>
+
+        <input id="username" placeholder="Username">
+        <input id="password" type="password" placeholder="Password">
+
+        <button onclick="signup()">Sign Up</button>
+        <button onclick="login()">Login</button>
+    </div>
+
+    <div class="box" id="app" style="display:none;">
+        <h2 id="welcome"></h2>
+
+        <input id="task" placeholder="Task">
+        <input id="date" type="date">
+
+        <button onclick="addTask()">Add Task</button>
+
+        <ul id="list"></ul>
+
+        <button onclick="logout()" style="background:red">Logout</button>
+    </div>
+
+    <script>
+        const API_BASE = "http://localhost:5000";
+
+        const usernameInput = document.getElementById("username");
+        const passwordInput = document.getElementById("password");
+        const taskInput = document.getElementById("task");
+        const dateInput = document.getElementById("date");
+        const authBox = document.getElementById("auth");
+        const appBox = document.getElementById("app");
+        const welcomeText = document.getElementById("welcome");
+        const list = document.getElementById("list");
+
+        let userId = "";
+        let usernameGlobal = "";
+
+        // SIGNUP
+        async function signup() {
+            const res = await fetch(`${API_BASE}/signup`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    username: usernameInput.value,
+                    password: passwordInput.value
+                })
+            });
+
+            const data = await res.json();
+            alert(data.message);
+        }
+
+        // LOGIN
+        async function login() {
+            const res = await fetch(`${API_BASE}/login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    username: usernameInput.value,
+                    password: passwordInput.value
+                })
+            });
+
+            const data = await res.json();
+
+            if (res.status === 200) {
+                userId = data.userId;
+                usernameGlobal = data.username;
+
+                authBox.style.display = "none";
+                appBox.style.display = "block";
+
+                welcomeText.innerText = "Welcome " + usernameGlobal;
+                loadTasks();
+            } else {
+                alert(data.message);
+            }
+        }
+
+        // ADD TASK
+        async function addTask() {
+            await fetch(`${API_BASE}/add-task`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    title: taskInput.value,
+                    dueDate: dateInput.value,
+                    userId
+                })
+            });
+
+            taskInput.value = "";
+            loadTasks();
+        }
+
+        // LOAD TASKS
+        async function loadTasks() {
+            const res = await fetch(`${API_BASE}/tasks/${userId}`);
+            const data = await res.json();
+
+            list.innerHTML = "";
+
+            data.forEach(t => {
+                const overdue = new Date(t.dueDate) < new Date() && t.status === "pending";
+
+                const li = document.createElement("li");
+
+                li.innerHTML = `
+    <span class="${overdue ? 'overdue' : ''}">
+        ${t.title} (${t.status}) ${overdue ? "🔴" : ""}
+    </span>
+
+    <div>
+        <button onclick="complete('${t._id}')">✔</button>
+        <button onclick="del('${t._id}')">❌</button>
+    </div>
+    `;
+
+                list.appendChild(li);
+            });
+        }
+
+        // COMPLETE
+        async function complete(id) {
+            await fetch(`${API_BASE}/complete/${id}`, { method: "PUT" });
+            loadTasks();
+        }
+
+        // DELETE
+        async function del(id) {
+            await fetch(`${API_BASE}/delete/${id}`, { method: "DELETE" });
+            loadTasks();
+        }
+
+        // LOGOUT
+        function logout() {
+            location.reload();
+        }
+    </script>
+
+</body>
+
+</html>
