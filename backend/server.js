@@ -40,6 +40,7 @@ const connectMongo = async () => {
   } catch (primaryError) {
     if (mongoUri !== fallbackMongoUri) {
       console.warn("Primary MongoDB connection failed, trying local fallback...");
+      console.error("Reason:", primaryError.message);
       try {
         await mongoose.connect(fallbackMongoUri, {
           useNewUrlParser: true,

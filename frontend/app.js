@@ -219,7 +219,7 @@ const renderTasks = () => {
 };
 
 const populateUserInfo = () => {
-  welcomeText.textContent = `Welcome back, ${state.user.username}`;
+  welcomeText.textContent = state.user.username;
   userRoleText.textContent = state.user.role === "admin" ? "Administrator" : "Team Member";
   currentUserName.textContent = state.user.username;
   currentUserRole.textContent = state.user.role === "admin" ? "Admin" : "Member";
