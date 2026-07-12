@@ -1,4 +1,4 @@
-const API_BASE = "https://team-task-manager-696c.onrender.com";
+const API_BASE = "https://team-task-manager-696c.onrender.com/api";
 const state = {
   token: null,
   user: null,
