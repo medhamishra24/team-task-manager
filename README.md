@@ -1,59 +1,85 @@
 # Team Task Manager
 
-A modern full-stack team task manager app with:
-- Node.js + Express backend
-- MongoDB + JWT authentication
-- Role-based admin/member access
-- Responsive dark SaaS dashboard UI
-- Clean API routes, validation, error handling
-- In-memory MongoDB fallback for local startup
+A full-stack team task management application with role-based access, real-time task tracking, and a modern dashboard interface.
 
-## File structure
-- `backend/`
-  - `server.js` - Express server entrypoint with auth and task routes
-  - `routes/` - API route modules
-  - `models/` - Mongoose schemas for User and Task
-  - `middleware/` - auth and error handling middleware
-  - `.env` - environment variables (MongoDB connection, optional JWT secret)
-- `frontend/`
-  - `index.html` - modern dashboard and auth UI
-  - `styles.css` - dashboard styling
-  - `app.js` - frontend app logic, session persistence, toasts, modals
+**Live Demo:** https://team-task-manager-1-pm2n.onrender.com
 
-## Run locally
-### Backend
-1. Open a terminal in `backend/`
-2. Run `npm install`
-3. Start the server with `npm start`
-4. The backend will run on `http://localhost:5000`
+## Features
 
-### Frontend
-1. Open `frontend/index.html` in your browser
-2. Or serve the folder with a static server (recommended)
+- 🔐 **Authentication** — Secure signup/login with JWT-based authentication
+- 👥 **Role-Based Access** — Separate views and permissions for Admins and Team Members
+- ✅ **Task Management** — Create, update, delete, and track tasks with priority levels
+- 📊 **Dashboard** — Live stats on total, completed, pending, and overdue tasks
+- 🔍 **Search & Filter** — Quickly find tasks by status or keyword
+- 👤 **Task Assignment** — Admins can assign tasks to specific team members
+- 🌓 **Toggle Mode** — Switch between light and dark themes
+- 📱 **Responsive UI** — Clean, modern interface built with vanilla JS
 
-## Notes
-- The backend uses `process.env.MONGO_URI` / `process.env.MONGO_URL` first.
-- If Atlas/local MongoDB fails, it will fall back to an in-memory MongoDB instance.
-- JWT auth protects the API and enables session persistence in the browser.
+## Tech Stack
 
-## Deployment
-### Railway
-1. Connect your GitHub repo and deploy the `backend/` folder.
-2. Set environment variables in Railway:
-   - `MONGO_URI` or `MONGO_URL`
-   - `JWT_SECRET`
-3. Use the Railway URL for frontend API requests in production.
+**Backend**
+- Node.js + Express.js
+- MongoDB with Mongoose (hosted on MongoDB Atlas)
+- JWT for authentication
+- bcrypt for password hashing
 
-### Vercel
-1. Deploy the `frontend/` folder as a static site.
-2. Deploy the backend separately on Railway, Heroku, or another Node host.
-3. Update `API_BASE` in `frontend/app.js` to your backend URL.
-4. Set `JWT_SECRET` and Mongo env vars on the backend host.
+**Frontend**
+- HTML5, CSS3, Vanilla JavaScript
+- Fetch API for backend communication
 
-## How to use
-- Sign up to create the first admin account.
-- Login to access the dashboard.
-- Admins can create and delete tasks.
-- Members can update task status and filter tasks.
-- Tasks include priority, due date, status badges, search, and activity.
+**Deployment**
+- Backend: Render (Web Service)
+- Frontend: Render (Static Site)
 
+## Project Structure
+
+team-task-manager/
+├── backend/
+│   ├── middleware/
+│   ├── models/
+│   ├── routes/
+│   ├── server.js
+│   └── package.json
+├── frontend/
+│   ├── index.html
+│   ├── app.js
+│   └── styles.css
+└── README.md
+
+## Getting Started (Local Setup)
+
+### Prerequisites
+- Node.js installed
+- MongoDB Atlas account (or local MongoDB)
+
+### Backend Setup
+```bash
+cd backend
+npm install
+
+Create a .env file in the backend folder:
+MONGO_URI=your_mongodb_connection_string
+PORT=5000
+
+Run the server:node server.js
+
+Frontend Setup
+
+Open frontend/index.html using a live server (e.g., VS Code Live Server extension).
+
+Update the API_BASE constant in frontend/app.js to point to your backend URL.
+
+API Endpoints
+
+Method	Endpoint	Description
+POST	/api/auth/signup	Register a new user
+POST	/api/auth/login	Login existing user
+GET	/api/tasks	Get all tasks
+GET	/api/tasks/stats	Get task statistics
+POST	/api/tasks	Create a new task
+PUT	/api/tasks/:id	Update a task
+DELETE	/api/tasks/:id	Delete a task
+
+Author
+
+Medha Mishra
